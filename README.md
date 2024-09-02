@@ -114,8 +114,8 @@ CLOCK_REALTIMEもPOSIX定数であり、C99標準では宣言されていませ�
 
 ### 1. POSIX準拠のオプションを使用する:
 
-    -std=gnu99や-std=gnu11を使用すると、POSIX関数が利用可能になります。こ
-    れにより、clock_gettimeやCLOCK_REALTIMEの定義が有効になります。
+`-std=gnu99`や`-std=gnu11`を使用すると、POSIX関数が利用可能になります。こ
+れにより、clock_gettimeやCLOCK_REALTIMEの定義が有効になります。
 
 ```
 gcc -Wall -Ofast -std=gnu99 -c get_time.c 

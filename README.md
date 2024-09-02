@@ -26,16 +26,16 @@ get_time, get_time_utime, get_time_wctime:
 時間を測定する目的で使用されますが、その動作や測定対象の時間が異なり
 ます。
 
-get_time_utime関数とget_time_wctime関数はどちらも時間を測定する目的で
+`get_time_utime`関数と`get_time_wctime`関数はどちらも時間を測定する目的で
 使用されますが、その動作や測定対象の時間が異なります。それぞれの違いを
 以下に詳しく説明します。
 
 ### 0. 要約
 
-get_time_utime 関数 は、プログラムが実際に計算に費やしたユーザーCPU時
+`get_time_utime` 関数 は、プログラムが実際に計算に費やしたユーザーCPU時
 間を秒単位で取得します。
 
-get_time_wctime 関数 は、実世界の経過時間（wall-clock time）を秒単位で
+`get_time_wctime` 関数 は、実世界の経過時間（wall-clock time）を秒単位で
 取得し、プログラム全体の実行時間を測定するために使用されます。
 
 
@@ -43,15 +43,15 @@ get_time_wctime 関数 は、実世界の経過時間（wall-clock time）を秒
 
 #### get_time_utime 関数:
 
-getrusage 関数を使用して、現在のプロセスのユーザーCPU時間を秒単位で取
+`getrusage` 関数を使用して、現在のプロセスのユーザーCPU時間を秒単位で取
 得します。CPUが実際に計算に費やした時間のみを測定します。つまり、I/O待
 ち時間やスリープ時間などは含まれません。この関数はプログラムの処理効率
 を測定するのに適しています。
 
 #### get_time_wctime 関数:
 
-clock_gettime 関数を使用して、実時間（リアルタイム）をミリ秒単位で取得
-します。CLOCK_REALTIME を使用しているため、実世界の時間、つまりカレン
+`clock_gettime` 関数を使用して、実時間（リアルタイム）をミリ秒単位で取得
+します。`CLOCK_REALTIME` を使用しているため、実世界の時間、つまりカレン
 ダー時間を返します。この時間にはプログラムの実行中に経過したすべての時
 間が含まれ、CPUが処理していない待機時間も含まれます。この関数は、プロ
 グラム全体の実行時間を測定するのに適しています。
@@ -59,13 +59,13 @@ clock_gettime 関数を使用して、実時間（リアルタイム）をミリ
 ### 2. 時間の計算方法
 
 #### get_time_utime 関数:
-struct rusage を使用して、秒（tv_sec）とマイクロ秒（tv_usec）を取り出
+`struct rusage` を使用して、秒（`tv_sec`）とマイクロ秒（`tv_usec`）を取り出
 し、それらを合わせて秒単位の時間を計算します。
 
 #### get_time_wctime 関数:
 
-struct timespec を使用し、clock_gettime で取得した時刻の秒（tv_sec）を
-ミリ秒に変換し、ナノ秒（tv_nsec）をミリ秒に変換して加算します。時間を
+`struct timespec` を使用し、`clock_gettime` で取得した時刻の秒（`tv_sec`）を
+ミリ秒に変換し、ナノ秒（`tv_nsec`）をミリ秒に変換して加算します。時間を
 ミリ秒単位で計算し、それをさらに秒に変換しています。
 
 ### 3. 返り値の精度
@@ -81,21 +81,21 @@ struct timespec を使用し、clock_gettime で取得した時刻の秒（tv_se
 
 ## GNU拡張について
 
-_POSIX_C_SOURCEは-std=c99オプションを使ってコンパイルできるようにする
+`_POSIX_C_SOURCE`は`-std=c99`オプションを使ってコンパイルできるようにする
 ためにあります。
 
-コンパイルが失敗する理由は、-std=c99オプションを使った際に、
-clock_gettime関数とCLOCK_REALTIME定数が使用できないためです。C99規格は
+コンパイルが失敗する理由は、`-std=c99`オプションを使った際に、
+`clock_gettime`関数と`CLOCK_REALTIME`定数が使用できないためです。C99規格は
 標準ライブラリの中で一部の機能をサポートしていませんが、GNU拡張
-（-std=gnu99）を使うと標準Cライブラリに含まれないいくつかのPOSIX関数が
+（`-std=gnu99`）を使うと標準Cライブラリに含まれないいくつかのPOSIX関数が
 利用可能になります。
 
 具体的には、以下の理由でエラーが発生します：
 
 ### struct timespecの未定義:
 
-C99規格では、<time.h>はstruct timespecを定義していない可能性があります。
-そのため、struct timespecのサイズが不明なためコンパイルが失敗します。
+C99規格では、`<time.h>`は`struct timespec`を定義していない可能性があります。
+そのため、`struct timespec`のサイズが不明なためコンパイルが失敗します。
 
 ### clock_gettime関数の未宣言:
 
@@ -115,7 +115,7 @@ CLOCK_REALTIMEもPOSIX定数であり、C99標準では宣言されていませ�
 ### 1. POSIX準拠のオプションを使用する:
 
 `-std=gnu99`や`-std=gnu11`を使用すると、POSIX関数が利用可能になります。こ
-れにより、clock_gettimeやCLOCK_REALTIMEの定義が有効になります。
+れにより、`clock_gettime`や`CLOCK_REALTIME`の定義が有効になります。
 
 ```
 gcc -Wall -Ofast -std=gnu99 -c get_time.c 
@@ -123,7 +123,7 @@ gcc -Wall -Ofast -std=gnu99 -c get_time.c
 
 ### 2. POSIX機能を有効にするために、POSIX定数_POSIX_C_SOURCEを宣言する
 
-    POSIX定数_POSIX_C_SOURCEを宣言することで、C99モードでも
-    clock_gettimeが使用可能になります。
+POSIX定数_POSIX_C_SOURCEを宣言することで、C99モードでも
+`clock_gettime`が使用可能になります。
 
 今回は2.の方法を使っています。

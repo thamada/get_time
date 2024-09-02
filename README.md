@@ -99,13 +99,13 @@ C99規格では、`<time.h>`は`struct timespec`を定義していない可能�
 
 ### clock_gettime関数の未宣言:
 
-clock_gettime関数はPOSIXに準拠している関数であり、C99の標準には含まれ
+`clock_gettime`関数はPOSIXに準拠している関数であり、C99の標準には含まれ
 ていません。そのため、C99でコンパイルすると「暗黙の宣言」という警告が
 発生し、関数のプロトタイプが見つからないためコンパイルが失敗します。
 
 ### CLOCK_REALTIMEの未定義:
 
-CLOCK_REALTIMEもPOSIX定数であり、C99標準では宣言されていません。そのた
+`CLOCK_REALTIME`もPOSIX定数であり、C99標準では宣言されていません。そのた
 め、未定義エラーが発生します。
 
 解決策

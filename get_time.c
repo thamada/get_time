@@ -1,5 +1,5 @@
 /**
-  Time-stamp: <2024-08-30 18:09:10 hamada>
+  Time-stamp: <2024-09-18 14:10:48 hamada>
   Copyright 2024 Tsuyoshi Hamada
 */
 
@@ -112,29 +112,42 @@ gcc -Wall -Ofast -std=gnu99 -c get_time.c
 #include <unistd.h>
 #include <sys/time.h>
 #include <sys/resource.h>
+
+// get the user-time in seconds
+#define GET_TIME_UTIME_IN_SECONDS(z)      \
+    do {                                  \
+        struct rusage r;                  \
+        getrusage(RUSAGE_SELF, &r);       \
+        double sec = r.ru_utime.tv_sec;   \
+        double usec = r.ru_utime.tv_usec; \
+        z = sec + usec * 1.0e-6;          \
+    } while (0)
+
+// get the wallclock-time in seconds
+#define GET_TIME_WCTIME_IN_SECONDS(wctime)      \
+    do {                                        \
+        struct timespec time;                   \
+        clock_gettime(CLOCK_REALTIME, &time);   \
+        long ms = time.tv_sec * 1000 + time.tv_nsec / 1000000; \
+        wctime = ((double)ms) / 1000.0;         \
+    } while (0)
+
 double get_time_utime(void)
 {
-  struct rusage r;
-  double sec, usec, z;
-  getrusage(RUSAGE_SELF, &r);
-  sec   = r.ru_utime.tv_sec;
-  usec  = r.ru_utime.tv_usec;
-  z = sec + usec * 1.0e-6;
-  return (z);
-}
-
-static inline long time_in_ms(void) {
-  // return time in milliseconds
-  struct timespec time;
-  clock_gettime(CLOCK_REALTIME, &time);
-  return time.tv_sec * 1000 + time.tv_nsec / 1000000;
+    double t;
+    GET_TIME_UTIME_IN_SECONDS(t);
+    return (t);
 }
 
 double get_time_wctime(void) {
-    long t = time_in_ms();
-    return ((double)t) / 1000.0;
+    double t;
+    GET_TIME_WCTIME_IN_SECONDS(t);
+    return t;
 }
 
 double get_time(void) {
-    return get_time_wctime();
+    double t;
+    GET_TIME_WCTIME_IN_SECONDS(t);
+    //GET_TIME_UTIME_IN_SECONDS(t);
+    return t;
 }
